@@ -7,12 +7,16 @@ import (
 	"net"
 	"os"
 
+	"github.com/soroushj/go-grpc-otel-example/jaeger"
 	"github.com/soroushj/go-grpc-otel-example/notes"
 	"github.com/soroushj/go-grpc-otel-example/server"
-	"github.com/soroushj/go-grpc-otel-example/trcprv"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc"
+)
+
+const (
+	serviceName = "go-grpc-otel-example/server/cmd/server"
 )
 
 func main() {
@@ -29,10 +33,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen at %v: %v", addr, err)
 	}
-	tu := os.Getenv("JAEGER_URL")
-	tp, err := trcprv.TracerProvider(tu, "go-grpc-otel-example/server/cmd/server")
+	tp, err := jaeger.TracerProvider(os.Getenv("JAEGER_URL"), serviceName)
 	if err != nil {
-		log.Fatalf("failed to provide tracer at %v: %v", tu, err)
+		log.Fatalf("failed to provide tracer: %v", err)
 	}
 	otel.SetTracerProvider(tp)
 	s := grpc.NewServer(grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()))

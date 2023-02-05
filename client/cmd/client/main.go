@@ -9,12 +9,16 @@ import (
 	"strings"
 
 	"github.com/soroushj/go-grpc-otel-example/client"
+	"github.com/soroushj/go-grpc-otel-example/jaeger"
 	"github.com/soroushj/go-grpc-otel-example/notes"
-	"github.com/soroushj/go-grpc-otel-example/trcprv"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+)
+
+const (
+	serviceName = "go-grpc-otel-example/client/cmd/client"
 )
 
 func main() {
@@ -36,8 +40,7 @@ func main() {
 }
 
 func run(ctx context.Context, addr string) error {
-	tu := os.Getenv("JAEGER_URL")
-	tp, err := trcprv.TracerProvider(tu, "go-grpc-otel-example/client/cmd/client")
+	tp, err := jaeger.TracerProvider(os.Getenv("JAEGER_URL"), serviceName)
 	if err != nil {
 		return err
 	}

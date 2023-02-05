@@ -1,4 +1,6 @@
-package trcprv
+// See https://github.com/open-telemetry/opentelemetry-go/blob/main/example/jaeger/main.go
+
+package jaeger
 
 import (
 	"go.opentelemetry.io/otel/attribute"
